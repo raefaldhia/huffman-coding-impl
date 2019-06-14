@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void huffman_push(tree_t* tree, char character, int code_length) {
 
@@ -198,4 +199,36 @@ intermediate_node_t* intermediate_node_extractor_get(node_extractor_t* node_extr
 	}
 
 	return retval;
+}
+
+void generate_huffman_code(tree_t* tree){
+	huffman_node_t* current = (huffman_node_t*)tree->head;
+	int length = current->code_length;
+	int code = 0;
+	
+	while (current != NULL_NODE) {
+		while(length!=current->code_length){
+			code <<= 1;
+			length += 1;
+		}
+		current->code = code;
+		code += 1;
+		current = current->next;
+	}
+	
+}
+
+display_huffman_code(tree_t tree){
+	huffman_node_t* current = (huffman_node_t*)tree.head;
+	int i;
+	
+	while(current != NULL_NODE){
+		printf(" %c  : ", current->character);
+		
+		for (i = 1; i <= current->code_length; i++) {
+			printf("%u", (current->code >> (current->code_length - i)) & 1);
+		}
+		printf("\n");
+		current = current->next;
+	}
 }

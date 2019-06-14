@@ -15,7 +15,7 @@ typedef struct frequency_node_s {
 	struct frequency_node_s* left;
 } frequency_node_t;
 
-void frequency_push(tree_t* tree, char character, int frequency);
+void frequency_push(frequency_node_t* node, char character, int frequency);
 
 void counter_reinit_frequency(tree_t* tree);
 

@@ -5,7 +5,25 @@
 
 #include "counter.h"
 
-void frequency_push(tree_t* tree, char character, int frequency) {
+void frequency_push(frequency_node_t* node, char character, int frequency) {
+		if(node==NULL_NODE){
+			frequency_node_t* newNode = malloc(sizeof(frequency_node_t));
+			newNode->character = character;
+			newNode->frequency = frequency;
+			newNode->left = NULL_NODE;
+			newNode->right = NULL_NODE;
+			return;
+		}
+
+		
+		if(node->frequency > frequency){
+			frequency_push(node->right, character, frequency);
+		}
+		else if(node->frequency <= frequency){
+			//based on counter_reinit_frequency when letter has a same frequency push it to the left node
+			frequency_push(node->left, character, frequency);
+		}
+		
 
 }
 
