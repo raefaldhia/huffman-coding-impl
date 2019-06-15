@@ -201,24 +201,7 @@ intermediate_node_t* intermediate_node_extractor_get(node_extractor_t* node_extr
 	return retval;
 }
 
-void generate_huffman_code(tree_t* tree){
-	huffman_node_t* current = (huffman_node_t*)tree->head;
-	int length = current->code_length;
-	int code = 0;
-	
-	while (current != NULL_NODE) {
-		while(length!=current->code_length){
-			code <<= 1;
-			length += 1;
-		}
-		current->code = code;
-		code += 1;
-		current = current->next;
-	}
-	
-}
-
-display_huffman_code(tree_t tree){
+void display_huffman_code(tree_t tree){
 	huffman_node_t* current = (huffman_node_t*)tree.head;
 	int i;
 	

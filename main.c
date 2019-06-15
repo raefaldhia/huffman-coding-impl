@@ -1,11 +1,13 @@
 #include "tree.h"
-#include "counter.h"
-#include "frequency.h"
-#include "huffman.h"
 
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+
+#include "counter.h"
+#include "frequency.h"
+#include "huffman.h"
+#include "util.h"
 
 int main() {
 	tree_t tree;
@@ -30,7 +32,7 @@ int main() {
 		
 		case 2 :
 			string_input=malloc(100*sizeof(char)); //not effective
-			fflush(stdin);
+			clearstdin();
 			gets(string_input);
 			generate_counter_tree(&tree, string_input);
 			counter_reinit_frequency(&tree);
@@ -44,7 +46,7 @@ int main() {
 				
 				printf("Letter    :");scanf(" %c", &letter);
 				printf("Frequency :");scanf("%d", &frequency);
-				frequency_push((frequency_node_t*)tree.head, letter, frequency);
+				tree.head = frequency_push((frequency_node_t*)tree.head, letter, frequency);
 				
 			}
 		break;
@@ -54,7 +56,6 @@ int main() {
 		break;		
 	}
 	frequency_reinit_huffman(&tree);
-	generate_huffman_code(&tree);
 	printf("Huffman code generated...");
 	getch();
 	
