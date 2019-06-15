@@ -34,4 +34,8 @@ void intermediate_node_extractor_push(node_extractor_t* node_extractor, intermed
 intermediate_node_t* intermediate_node_extractor_get(node_extractor_t* node_extractor);
 
 void display_huffman_code(tree_t tree);
+void print_code(huffman_node_t* node);
+
+void encode(tree_t tree, char* string_input);
+void decode();
 #endif // HUFFMAN_H

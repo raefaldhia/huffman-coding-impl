@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void huffman_push(tree_t* tree, char character, int code_length) {
 
@@ -207,11 +208,40 @@ void display_huffman_code(tree_t tree){
 	
 	while(current != NULL_NODE){
 		printf(" %c  : ", current->character);
-		
-		for (i = 1; i <= current->code_length; i++) {
-			printf("%u", (current->code >> (current->code_length - i)) & 1);
-		}
+		print_code(current);
 		printf("\n");
 		current = current->next;
 	}
+}
+
+void print_code(huffman_node_t* node){
+	int i;
+	
+	for (i = 1; i <= node->code_length; i++) {
+			printf("%u", (node->code >> (node->code_length - i)) & 1);
+		}
+}
+
+void encode(tree_t tree, char* string_input){
+	int i,length;
+	huffman_node_t* current;
+	
+	length = strlen(string_input);
+	
+	
+	for(i=0; i<length; i++){
+		current = (huffman_node_t*)tree.head;
+		
+		while(current!= NULL_NODE){
+			if(string_input[i] == current->character){
+				print_code(current);
+				break;
+			}
+			current = current->next;
+		}
+	}	
+}
+
+void decode(){
+	
 }

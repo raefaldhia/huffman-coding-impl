@@ -12,7 +12,7 @@
 int main() {
 	tree_t tree;
 	int choice, i, quantity, frequency;
-	char* string_input;
+	char *string_input, *encode_str;
 	char letter;
 	bool end=false;
 	
@@ -63,8 +63,8 @@ int main() {
 		system("cls");
 		printf("===Main Menu===\n\n");
 		printf("1 : Table of Huffman Code\n");
-		printf("2 : Conversion String to Huffman Code\n");
-		printf("3 : \n");
+		printf("2 : Encoding\n");
+		printf("3 : Decoding\n");
 		printf("4 : Exit\n");
 		printf("Choice : ");scanf("%d", &choice);
 		
@@ -72,6 +72,20 @@ int main() {
 			case 1 :
 				display_huffman_code(tree);
 				getch();	
+			break;
+			
+			case 2 :
+				encode_str = malloc(100*sizeof(char)); //not effective
+				printf("Input        : ");
+				clearstdin();
+				gets(encode_str);
+				printf("Huffman Code : ");
+				encode(tree, encode_str);
+				getch();
+			break;
+			
+			case 3 :
+				decode();
 			break;
 			
 			case 4 :
