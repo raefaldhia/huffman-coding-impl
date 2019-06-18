@@ -208,40 +208,51 @@ void display_huffman_code(tree_t tree){
 	
 	while(current != NULL_NODE){
 		printf(" %c  : ", current->character);
-		print_code(current);
+		print_code(current->code, current->code_length);
 		printf("\n");
 		current = current->next;
 	}
 }
 
-void print_code(huffman_node_t* node){
+void print_code(uint8_t code, int code_length){
 	int i;
 	
-	for (i = 1; i <= node->code_length; i++) {
-			printf("%u", (node->code >> (node->code_length - i)) & 1);
+	for (i = 1; i <= code_length; i++) {
+			printf("%u", (code >> (code_length - i)) & 1);
 		}
 }
 
 void encode(tree_t tree, char* string_input){
-	int i,length;
-	huffman_node_t* current;
+	int i,string_length, code_length;
+	uint8_t code;
 	
-	length = strlen(string_input);
+	string_length = strlen(string_input);
 	
-	
-	for(i=0; i<length; i++){
-		current = (huffman_node_t*)tree.head;
+	for(i=0; i<string_length; i++){
+		code_length = get_code(tree, string_input[i], &code);
 		
-		while(current!= NULL_NODE){
-			if(string_input[i] == current->character){
-				print_code(current);
-				break;
-			}
-			current = current->next;
+		if(code_length != 0){
+			print_code(code, code_length);
 		}
 	}	
 }
 
+int get_code(tree_t tree, char letter, uint8_t* code){
+	huffman_node_t* current = (huffman_node_t*)tree.head;
+	
+	while(current != NULL_NODE){
+		if(current->character == letter){
+			*code = current->code;
+			return current->code_length;
+		}
+	}
+	return 0;
+}
+
 void decode(){
 	
+}
+
+char get_character(tree_t* tree, ){
+	huffman_node_t* current_position = (huffman_node_t*)tree.head;
 }
