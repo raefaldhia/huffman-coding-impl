@@ -37,8 +37,8 @@ void display_huffman_code(tree_t tree);
 void print_code(uint8_t code, int code_length);
 
 
-void encode(tree_t tree, char* string_input);
-int get_code(tree_t tree, char letter, uint8_t* code);
+void encode(tree_t tree, char* string_input, int* total_length);
+int get_code(tree_t tree, char letter, uint8_t* code, int* total_length);
 
 
 void decode();
