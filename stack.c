@@ -14,7 +14,7 @@ void stack_init(stack_t* stack, size_t element_size) {
 int stack_push(stack_t* stack, void* content) {
     stack->next += 1;
     if (stack->next > stack->capacity) {
-        stack->capacity = stack->next * stack->next;
+        stack->capacity = stack->next * 2;
         
         void** address = (void**)realloc(stack->head, stack->element_size * stack->capacity);
         if (address == NULL) {

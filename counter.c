@@ -19,29 +19,25 @@ void generate_counter_tree(tree_t* tree, char* string_input){
 int counter_push(tree_t* tree, char character) {
 	assert(tree != NULL);
 
-	stack_t call_stack;
-	stack_init(&call_stack, sizeof(counter_node_t**));
-	if (stack_push(&call_stack, &tree->head)) {
-		stack_delete(&call_stack);
-		return 1;
-	}
+	stack_t parent_stack;
+	stack_init(&parent_stack, sizeof(counter_node_t**));
 	
-	counter_node_t** location;
-	while ((*(location = (counter_node_t**)stack_top(&call_stack))) != NULL_NODE) {
-		int NMEMORY = 0;
-		if (character < (*location)->character) {
-			NMEMORY = stack_push(&call_stack, &(*location)->left);
-		} else if (character > (*location)->character) {
-			NMEMORY = stack_push(&call_stack, &(*location)->right);
-		} else {
-			(*location)->count += 1;
-			stack_delete(&call_stack);
-			return 0;
+	counter_node_t** location = (counter_node_t**)&tree->head;
+	while (*location != NULL_NODE) {
+		if (stack_push(&parent_stack, location)) { 
+			stack_delete(&parent_stack);
+			return 1; 
 		}
 
-		if (NMEMORY) { 
-			stack_delete(&call_stack);
-			return NMEMORY; 
+		if (character < (*location)->character) {
+			location = &(*location)->left;
+		} else if (character > (*location)->character) {
+			location = &(*location)->right;
+		} else {
+			(*location)->count += 1;
+
+			stack_delete(&parent_stack);
+			return 0;
 		}
 	}
 
@@ -56,28 +52,27 @@ int counter_push(tree_t* tree, char character) {
 	node->left     	= NULL_NODE;
 	node->right     = NULL_NODE;
 
-	(*location) = node;
-	stack_pop(&call_stack);
+	*location = node;
 
-	while ((location = (counter_node_t**)stack_top(&call_stack)) != NULL) {
+	while ((location = stack_top(&parent_stack)) != NULL) {
 		counter_node_height_calculate(*location);
 
 		balance_factor_t balance = counter_node_balance_factor(*location);
 		if (balance < LEFT) {
-			if (counter_node_balance_factor((*location)->left) > EQUAL) {
+			if (counter_node_balance_factor((*location)->left) >= RIGHT) {
 				(*location)->left = counter_node_rotate_left((*location)->left);
 			}
 			*location = counter_node_rotate_right(*location);
 		} else if (balance > RIGHT) {
-			if (counter_node_balance_factor((*location)->right) < EQUAL) {
+			if (counter_node_balance_factor((*location)->right) <= LEFT) {
 				(*location)->right = counter_node_rotate_right((*location)->right);
 			}
 			*location = counter_node_rotate_left((*location));
 		}
-		stack_pop(&call_stack);
+		stack_pop(&parent_stack);
 	}
 
-	stack_delete(&call_stack);
+	stack_delete(&parent_stack);
 	return 0;
 }
 

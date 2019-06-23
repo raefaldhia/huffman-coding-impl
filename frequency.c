@@ -9,7 +9,7 @@ frequency_node_t* frequency_push(frequency_node_t* node, char character, int fre
 		if(node==NULL_NODE){
 			frequency_node_t* newNode = malloc(sizeof(frequency_node_t));
 			newNode->character = character;
-            newNode->_reserved = false; // reset to 0, required for huffman_itermediate to work
+            newNode->_reserved = 0; // reset to 0, required for huffman_itermediate to work
 			newNode->frequency = frequency;
 			newNode->left = NULL_NODE;
 			newNode->right = NULL_NODE;
@@ -41,7 +41,7 @@ void counter_reinit_frequency(tree_t* tree) {
     /* mark as empty to reinitialize the tree */ 
     tree->head = NULL_NODE;
     while ((node = node_extractor_get(&extractor)) != NULL_NODE) {
-        node->_reserved = false; // reset to 0, required for huffman_itermediate to work
+        node->_reserved = 0; // reset to 0, required for huffman_itermediate to work
 
         /* insert to a new empty tree in BST way based on the frequency */
         location = (frequency_node_t**)&tree->head;

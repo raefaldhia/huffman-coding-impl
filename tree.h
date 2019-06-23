@@ -16,9 +16,9 @@ typedef struct node_s {
 		size_t code_length; // huffman (canonical)
 	};
 	union {
-		uint8_t height; // counter
-		bool is_chain; // huffman
-		uint8_t code; 	// huffman (canonical)
+		uint16_t height; // counter
+		uint16_t is_chain; // huffman
+		uint16_t code; 	// huffman (canonical)
 	};
 	union {
 		struct node_s* right;
