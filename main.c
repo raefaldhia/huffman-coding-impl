@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "counter.h"
 #include "frequency.h"
@@ -11,7 +12,7 @@
 
 int main() {
 	tree_t tree;
-	int choice, i, quantity, frequency;
+	int choice, i, quantity, frequency, total_length, str_length;
 	char *string_input, *encode_str;
 	char letter;
 	bool end=false;
@@ -31,6 +32,7 @@ int main() {
 		break;
 		
 		case 2 :
+			printf("String : ");
 			string_input=malloc(100*sizeof(char)); //not effective
 			clearstdin();
 			gets(string_input);
@@ -63,9 +65,8 @@ int main() {
 		system("cls");
 		printf("===Main Menu===\n\n");
 		printf("1 : Table of Huffman Code\n");
-		printf("2 : Encoding\n");
-		printf("3 : Decoding\n");
-		printf("4 : Exit\n");
+		printf("2 : Convertion String to Huffman Code\n");
+		printf("3 : Exit\n");
 		printf("Choice : ");scanf("%d", &choice);
 		
 		switch(choice){
@@ -75,20 +76,19 @@ int main() {
 			break;
 			
 			case 2 :
+				total_length=0;
 				encode_str = malloc(100*sizeof(char)); //not effective
-				printf("Input        : ");
+				printf("Input                       = ");
 				clearstdin();
 				gets(encode_str);
-				printf("Huffman Code : ");
-				encode(tree, encode_str);
+				printf("Huffman Code                = ");
+				encode(tree, encode_str, &total_length);
+				str_length = strlen(encode_str);
+				printf("\nRasio Bit (Input : Huffman) = %d : %d",8 * str_length, total_length);
 				getch();
 			break;
 			
 			case 3 :
-				decode();
-			break;
-			
-			case 4 :
 				end=true;
 			break;
 		}
