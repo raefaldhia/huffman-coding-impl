@@ -5,7 +5,26 @@
 
 #include "counter.h"
 
-void frequency_push(tree_t* tree, char character, int frequency) {
+frequency_node_t* frequency_push(frequency_node_t* node, char character, int frequency) {
+		if(node==NULL_NODE){
+			frequency_node_t* newNode = malloc(sizeof(frequency_node_t));
+			newNode->character = character;
+            newNode->_reserved = false; // reset to 0, required for huffman_itermediate to work
+			newNode->frequency = frequency;
+			newNode->left = NULL_NODE;
+			newNode->right = NULL_NODE;
+			return newNode;
+		}
+
+		
+		if(node->frequency > frequency){
+		    node->right = frequency_push(node->right, character, frequency);
+		}
+		else if(node->frequency <= frequency){
+			//based on counter_reinit_frequency when letter has a same frequency push it to the left node
+			node->left = frequency_push(node->left, character, frequency);
+		}
+		
 
 }
 

@@ -21,6 +21,7 @@ typedef enum {
 	RIGHT = 1
 } balance_factor_t;
 
+void generate_counter_tree(tree_t* tree, char* string_input);
 int counter_push(tree_t* tree, char character);
 
 void counter_node_height_calculate(counter_node_t* node);

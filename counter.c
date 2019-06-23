@@ -2,9 +2,19 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "stack.h"
 #include "util.h"
+
+void generate_counter_tree(tree_t* tree, char* string_input){
+	int i;
+	int length = strlen(string_input);
+	
+	for(i=0; i<length; i++){
+		counter_push(tree, string_input[i]);
+	}
+}
 
 int counter_push(tree_t* tree, char character) {
 	assert(tree != NULL);
@@ -110,3 +120,5 @@ balance_factor_t counter_node_balance_factor(counter_node_t* node) {
 
 	return (node->right->height - node->left->height);
 }
+
+

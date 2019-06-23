@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 void huffman_push(tree_t* tree, char character, int code_length) {
 
@@ -199,3 +201,66 @@ intermediate_node_t* intermediate_node_extractor_get(node_extractor_t* node_extr
 
 	return retval;
 }
+
+void display_huffman_code(tree_t tree){
+	huffman_node_t* current = (huffman_node_t*)tree.head;
+	int i;
+	printf("===============================================================");
+	printf("\n|\t\t    TABLE OF HUFFMAN CODE\t\t      |");
+	printf("\n===============================================================");
+	printf("\nCharacter\t\tCode Length\t\tHuffman Code  |");
+	printf("\n===============================================================");
+	
+	while(current != NULL_NODE){
+		printf("\n   %c\t\t\t    %d \t\t\t   ", current->character, current->code_length);
+		print_code(current->code, current->code_length);
+		printf("\t      |");
+		current = current->next;
+		printf("\n---------------------------------------------------------------");
+	}
+}
+
+void print_code(uint8_t code, int code_length){
+	int i;
+	
+	for (i = 1; i <= code_length; i++) {
+			printf("%u", (code >> (code_length - i)) & 1);
+		}
+}
+
+void encode(tree_t tree, char* string_input, int* total_length){
+	int i,string_length, code_length;
+	uint8_t code;
+	
+	string_length = strlen(string_input);
+	
+	for(i=0; i<string_length; i++){
+		code_length = get_code(tree, string_input[i], &code, &(*total_length));
+		
+		if(code_length != 0){
+			print_code(code, code_length);
+		}
+	}	
+}
+
+int get_code(tree_t tree, char letter, uint8_t* code, int* total_length){
+	huffman_node_t* current = (huffman_node_t*)tree.head;
+	
+	while(current != NULL_NODE){
+		if(current->character == letter){
+			*code = current->code;
+			*total_length += current->code_length;
+			return current->code_length;
+		}
+		current=current->next;
+	}
+	return 0;
+}
+
+void decode(){
+	
+}
+
+/*char get_character(tree_t* tree, ){
+	huffman_node_t* current_position = (huffman_node_t*)tree.head;
+}*/
