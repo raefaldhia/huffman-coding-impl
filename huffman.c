@@ -253,6 +253,6 @@ void decode(){
 	
 }
 
-char get_character(tree_t* tree, ){
-	huffman_node_t* current_position = (huffman_node_t*)tree.head;
-}
+//char get_character(tree_t* tree, ){
+//	huffman_node_t* current_position = (huffman_node_t*)tree.head;
+//}

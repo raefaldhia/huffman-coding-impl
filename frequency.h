@@ -10,7 +10,7 @@
 typedef struct frequency_node_s {
 	char character;
 	size_t frequency;
-	bool _reserved; // initialize to 0, for later use by huffman intermediate
+	int16_t _reserved; // initialize to 0, for later use by huffman intermediate
 	struct frequency_node_s* right;
 	struct frequency_node_s* left;
 } frequency_node_t;

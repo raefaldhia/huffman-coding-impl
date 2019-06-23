@@ -10,7 +10,7 @@
 typedef struct counter_node_s {
 	char character;
 	size_t count;
-	uint8_t height;
+	uint16_t height;
 	struct counter_node_s* right;
 	struct counter_node_s* left;
 } counter_node_t;

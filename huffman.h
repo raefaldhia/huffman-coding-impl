@@ -10,7 +10,7 @@
 typedef struct intermediate_node_s {
 	char character;
 	size_t code_length;
-	bool is_chain;
+	uint16_t is_chain;
 	struct intermediate_node_s* right;
 	struct intermediate_node_s* left;
 } intermediate_node_t;
@@ -18,7 +18,7 @@ typedef struct intermediate_node_s {
 typedef struct huffman_node_s {
 	char character;
 	size_t code_length;
-	uint8_t code;
+	uint16_t code;
 	struct huffman_node_s* next;
 } huffman_node_t;
 

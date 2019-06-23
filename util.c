@@ -11,3 +11,7 @@ void clearstdin() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
 }
+
+void getch() {
+    
+}
