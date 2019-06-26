@@ -15,17 +15,13 @@ frequency_node_t* frequency_push(frequency_node_t* node, char character, int fre
 			newNode->right = NULL_NODE;
 			return newNode;
 		}
-
 		
-		if(node->frequency > frequency){
+		if(node->frequency <= frequency){
 		    node->right = frequency_push(node->right, character, frequency);
-		}
-		else if(node->frequency <= frequency){
+		} else {
 			//based on counter_reinit_frequency when letter has a same frequency push it to the left node
 			node->left = frequency_push(node->left, character, frequency);
-		}
-		
-
+        }
 }
 
 void counter_reinit_frequency(tree_t* tree) {

@@ -9,16 +9,16 @@
 
 typedef struct node_s {
 	char character;
-	// variable name that used in different context
+	/* Variable name that used in various tree's ADT */
 	union {
 		size_t count; 	    // counter
 		size_t frequency;   // frequency
 		size_t code_length; // huffman (canonical)
 	};
 	union {
-		uint16_t height; // counter
+		uint16_t height;   // counter
 		uint16_t is_chain; // huffman
-		uint16_t code; 	// huffman (canonical)
+		uint16_t code; 	   // huffman (canonical)
 	};
 	union {
 		struct node_s* right;

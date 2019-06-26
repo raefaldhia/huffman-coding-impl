@@ -7,6 +7,7 @@
 
 #include "tree.h"
 
+/* Every field have to be same size as described in node_t (tree.h) */
 typedef struct intermediate_node_s {
 	char character;
 	size_t code_length;
@@ -15,6 +16,7 @@ typedef struct intermediate_node_s {
 	struct intermediate_node_s* left;
 } intermediate_node_t;
 
+/* Every field have to be same size as described in node_t (tree.h) */
 typedef struct huffman_node_s {
 	char character;
 	size_t code_length;

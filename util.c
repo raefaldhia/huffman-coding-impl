@@ -12,6 +12,6 @@ void clearstdin() {
     while ((c = getchar()) != '\n' && c != EOF) {}
 }
 
-void getch() {
-    
-}
+#ifdef __linux__
+void getch() {}
+#endif
