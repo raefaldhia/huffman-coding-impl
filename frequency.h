@@ -6,7 +6,7 @@
 
 #include "tree.h"
 
-// linked with node_t
+/* Every field have to be same size as described in node_t (tree.h) */
 typedef struct frequency_node_s {
 	char character;
 	size_t frequency;

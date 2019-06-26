@@ -1,10 +1,13 @@
 #include "stack.h"
 
+#include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <math.h>
 
 void stack_init(stack_t* stack, size_t element_size) {
+    assert(stack != NULL);
+
     stack->head = NULL;
     stack->next = 0;
     stack->capacity = 0;
@@ -12,6 +15,8 @@ void stack_init(stack_t* stack, size_t element_size) {
 }
 
 int stack_push(stack_t* stack, void* content) {
+    assert(stack != NULL);
+    
     stack->next += 1;
     if (stack->next > stack->capacity) {
         stack->capacity = stack->next * 2;
@@ -28,6 +33,8 @@ int stack_push(stack_t* stack, void* content) {
 }
 
 void stack_pop(stack_t* stack) {  
+    assert(stack != NULL);
+
     stack->next    -= 1;
     stack->capacity = stack->capacity - 1;
     
@@ -35,6 +42,8 @@ void stack_pop(stack_t* stack) {
 }
 
 void* stack_top(stack_t* stack) {
+    assert(stack != NULL);
+
     if (!stack->next) {
         return NULL;
     }
@@ -42,5 +51,7 @@ void* stack_top(stack_t* stack) {
 }
 
 void stack_delete(stack_t* stack) {
+    assert(stack != NULL);
+
     free(stack->head);
 }

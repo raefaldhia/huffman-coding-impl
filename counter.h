@@ -6,7 +6,7 @@
 
 #include "tree.h"
 
-// must be equivalent with node_t
+/* Every field have to be same size as described in node_t (tree.h) */
 typedef struct counter_node_s {
 	char character;
 	size_t count;
@@ -16,9 +16,9 @@ typedef struct counter_node_s {
 } counter_node_t;
 
 typedef enum {
-	LEFT = -1,
-	EQUAL = 0,
-	RIGHT = 1
+	LEFT  = -1,
+	EQUAL =  0,
+	RIGHT =  1
 } balance_factor_t;
 
 void generate_counter_tree(tree_t* tree, char* string_input);

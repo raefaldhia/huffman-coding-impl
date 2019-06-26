@@ -18,10 +18,14 @@ void frequency_reinit_huffman(tree_t* tree) {
 void intermediate_reinit_huffman(tree_t* tree) {
 	assert(tree != NULL);
 
+	intermediate_node_t* node = NULL;
+	
 	/* delete the carrier */
-	intermediate_node_t* node = tree->head;
-	tree->head = ((intermediate_node_t*)tree->head)->left;
-	free(node);
+	node = tree->head;
+	if (node->left != NULL_NODE) {
+		tree->head = node->left;
+		free(node);
+	}
 	
 	node_extractor_t node_extractor;
 	intermediate_node_extractor_init(&node_extractor, tree->head);
@@ -49,6 +53,7 @@ void intermediate_reinit_huffman(tree_t* tree) {
 		*location = (huffman_node_t*)node;
 	}
 
+	/* Fill the node's code field with huffman coding */
 	huffman_node_t* curr = tree->head;
 
 	size_t len  = 0;
