@@ -3,8 +3,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "counter.h"
-
 frequency_node_t* frequency_push(frequency_node_t* node, char character, int frequency) {
 		if(node==NULL_NODE){
 			frequency_node_t* newNode = malloc(sizeof(frequency_node_t));
@@ -24,7 +22,7 @@ frequency_node_t* frequency_push(frequency_node_t* node, char character, int fre
         }
 }
 
-void counter_reinit_frequency(tree_t* tree) {
+void counter_reinit_frequency(counter_t* tree) {
     assert(tree != NULL);
 
     frequency_node_t 
@@ -32,7 +30,7 @@ void counter_reinit_frequency(tree_t* tree) {
         **location;
 
     node_extractor_t extractor;
-    node_extractor_init(&extractor, tree->head);
+    node_extractor_init(&extractor, (node_t*)tree->head);
 
     /* mark as empty to reinitialize the tree */ 
     tree->head = NULL_NODE;
@@ -40,7 +38,7 @@ void counter_reinit_frequency(tree_t* tree) {
         node->_reserved = 0; // reset to 0, required for huffman_itermediate to work
 
         /* insert to a new empty tree in BST way based on the frequency */
-        location = (frequency_node_t**)&tree->head;
+        location = &tree->head;
         while (*location != NULL_NODE) {
             if (node->frequency <= (*location)->frequency) {
                 location = &(*location)->left;

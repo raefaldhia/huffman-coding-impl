@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "canonical.h"
 #include "counter.h"
 #include "frequency.h"
-#include "huffman.h"
+#include "intermediate.h"
 #include "util.h"
 
 int main() {
@@ -28,16 +29,17 @@ int main() {
 	switch(choice){
 		case 1 :
 			generate_counter_tree(&tree, "HUFFMAN CODING");
-			counter_reinit_frequency(&tree);
+			counter_reinit_frequency((counter_t*)&tree);
 		break;
 		
 		case 2 :
 			printf("String : ");
-			string_input=malloc(100*sizeof(char)); //not effective
+//			string_input=malloc(100*sizeof(char)); //not effective
 			clearstdin();
-			gets(string_input);
-			generate_counter_tree(&tree, string_input);
-			counter_reinit_frequency(&tree);
+//			gets(string_input);
+			stream_counter_read((counter_t*)&tree, stdin);
+//			generate_counter_tree(&tree, string_input);
+			counter_reinit_frequency((counter_t*)&tree);
 		break;
 		
 		case 3 :
@@ -57,7 +59,9 @@ int main() {
 		
 		break;		
 	}
-	frequency_reinit_huffman(&tree);
+	frequency_reinit_intermediate((intermediate_t*)&tree);
+	intermediate_reinit_canonical(&tree);
+
 	printf("Huffman code generated...");
 	getch();
 	

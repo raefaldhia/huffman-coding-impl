@@ -7,7 +7,7 @@
 #include "stack.h"
 #include "util.h"
 
-void generate_counter_tree(tree_t* tree, char* string_input){
+void generate_counter_tree(counter_t* tree, char* string_input){
 	int i;
 	int length = strlen(string_input);
 	
@@ -16,17 +16,18 @@ void generate_counter_tree(tree_t* tree, char* string_input){
 	}
 }
 
-int counter_push(tree_t* tree, char character) {
+tree_retval_t counter_push(counter_t* tree, char character) {
 	assert(tree != NULL);
 
+	/* create a stack for visited node */
 	stack_t parent_stack;
 	stack_init(&parent_stack, sizeof(counter_node_t**));
 	
-	counter_node_t** location = (counter_node_t**)&tree->head;
+	counter_node_t** location = &tree->head;
 	while (*location != NULL_NODE) {
 		if (stack_push(&parent_stack, location)) { 
 			stack_delete(&parent_stack);
-			return 1; 
+			return NMEMORY; 
 		}
 
 		if (character < (*location)->character) {
@@ -35,17 +36,16 @@ int counter_push(tree_t* tree, char character) {
 			location = &(*location)->right;
 		} else {
 			(*location)->count += 1;
-
+			
 			stack_delete(&parent_stack);
-			return 0;
+			return OK;
 		}
 	}
 
 	counter_node_t* node = malloc(sizeof(counter_node_t));
 	if (node == NULL) {
-		return 1;
+		return NMEMORY;
 	}
-
 	node->character = character;
 	node->count     = 1;
 	node->height	= 1;
@@ -73,13 +73,13 @@ int counter_push(tree_t* tree, char character) {
 	}
 
 	stack_delete(&parent_stack);
-	return 0;
+	return OK;
 }
 
-void counter_node_height_calculate(counter_node_t* node) {
+int counter_node_height_calculate(counter_node_t* node) {
 	assert(node != NULL_NODE);
 
-	node->height = max(node->left->height, node->right->height) + 1;
+	return max(node->left->height, node->right->height) + 1;
 }
 
 counter_node_t* counter_node_rotate_left(counter_node_t* node) {
@@ -88,10 +88,10 @@ counter_node_t* counter_node_rotate_left(counter_node_t* node) {
 	counter_node_t* root = node->right;	
 
 	node->right = root->left;
-	root->left = node;
+	root->left  = node;
 
-	counter_node_height_calculate(node);
-	counter_node_height_calculate(root);
+	node->height = counter_node_height_calculate(node);
+	root->height = counter_node_height_calculate(root);
 
 	return root;
 }
@@ -101,11 +101,11 @@ counter_node_t* counter_node_rotate_right(counter_node_t* node) {
 
 	counter_node_t* root = node->left;
 
-	node->left = root->right;
+	node->left  = root->right;
 	root->right = node;
 
-	counter_node_height_calculate(node);
-	counter_node_height_calculate(root);
+	node->height = counter_node_height_calculate(node);
+	root->height = counter_node_height_calculate(root);
 
 	return root;
 }

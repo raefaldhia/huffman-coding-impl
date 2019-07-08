@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "tree.h"
+#include "counter.h"
 
 /* Every field have to be same size as described in node_t (tree.h) */
 typedef struct frequency_node_s {
@@ -15,8 +16,12 @@ typedef struct frequency_node_s {
 	struct frequency_node_s* left;
 } frequency_node_t;
 
+typedef struct frequency_s {
+	frequency_node_t* head;
+} frequency_t;
+
 frequency_node_t* frequency_push(frequency_node_t* node, char character, int frequency);
 
-void counter_reinit_frequency(tree_t* tree);
+void counter_reinit_frequency(counter_t* tree);
 
 #endif // FREQUENCY_H
