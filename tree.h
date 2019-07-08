@@ -7,6 +7,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+typedef enum {
+	OK = 0,
+	NMEMORY = 1
+} tree_retval_t;
+
 typedef struct node_s {
 	char character;
 	/* Variable name that used in various tree's ADT */

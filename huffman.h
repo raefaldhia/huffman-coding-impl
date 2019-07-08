@@ -7,37 +7,24 @@
 
 #include "tree.h"
 
-/* Every field have to be same size as described in node_t (tree.h) */
-typedef struct intermediate_node_s {
-	char character;
-	size_t code_length;
-	uint16_t is_chain;
-	struct intermediate_node_s* right;
-	struct intermediate_node_s* left;
-} intermediate_node_t;
-
-/* Every field have to be same size as described in node_t (tree.h) */
 typedef struct huffman_node_s {
 	char character;
 	size_t code_length;
-	uint16_t code;
-	struct huffman_node_s* next;
+	bool is_chain;
+	struct huffman_node_s* right;
+	struct huffman_node_s* left;
 } huffman_node_t;
 
-void huffman_push(tree_t* tree, char character, int code_length);
+typedef struct huffman_node_extractor_s {
+	huffman_node_t* stack;
+} huffman_node_extractor_t;
 
-void frequency_reinit_huffman(tree_t* tree);
-void intermediate_reinit_huffman(tree_t* tree);
-
-void intermediate_push(tree_t* tree, intermediate_node_t** nodeptr);
-void intermediate_push_node(tree_t* tree, intermediate_node_t* node);
-void intermediate_node_extractor_init(node_extractor_t* node_extractor, intermediate_node_t* node);
-void intermediate_node_extractor_push(node_extractor_t* node_extractor, intermediate_node_t* node, int level);
-intermediate_node_t* intermediate_node_extractor_get(node_extractor_t* node_extractor);
+void huffman_node_extractor_init(huffman_node_extractor_t* node_extractor, huffman_node_t* node);
+void huffman_node_extractor_push(huffman_node_extractor_t* node_extractor, huffman_node_t* node, int level);
+huffman_node_t* huffman_node_extractor_get(huffman_node_extractor_t* node_extractor);
 
 void display_huffman_code(tree_t tree);
 void print_code(uint8_t code, int code_length);
-
 
 void encode(tree_t tree, char* string_input, int* total_length);
 int get_code(tree_t tree, char letter, uint8_t* code, int* total_length);
