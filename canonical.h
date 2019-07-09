@@ -22,6 +22,7 @@ typedef struct canonical_s {
 void canonical_push(canonical_t* tree, canonical_node_t* node);
 tree_retval_t canonical_pushr(canonical_t* tree, char character, size_t code_length);
 void canonical_gencode(canonical_t* tree);
+
 int canonical_getcode(canonical_t* tree, char letter, uint16_t* code, size_t* code_length);
 
 canonical_node_t* canonical_node_create(char character, size_t code_length);

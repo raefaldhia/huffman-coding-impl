@@ -77,6 +77,7 @@ int canonical_getcode(canonical_t* tree, char letter, uint16_t* code, size_t* co
 	}
 	return 0;
 }
+
 canonical_node_t* canonical_node_create(char character, size_t code_length) {
 	canonical_node_t
 		*node = malloc(sizeof(canonical_node_t));
