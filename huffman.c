@@ -64,8 +64,8 @@ huffman_node_t* huffman_node_extractor_pop(huffman_node_extractor_t* node_extrac
 	return retval;
 }
 
-void display_huffman_code(tree_t tree){
-	canonical_node_t* current = (canonical_node_t*)tree.head;
+void display_huffman_code(canonical_t* tree){
+	canonical_node_t* current = tree->head;
 	int i;
 	printf("===============================================================");
 	printf("\n|\t\t    TABLE OF HUFFMAN CODE\t\t      |");
