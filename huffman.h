@@ -5,6 +5,7 @@
 #include <stddef.h>
 
 #include "tree.h"
+#include "canonical.h"
 
 /* each field must have equal size as described in node_t (tree.h) */
 typedef struct huffman_node_s {
@@ -19,7 +20,7 @@ typedef struct huffman_node_extractor_s {
 	huffman_node_t* stack;
 } huffman_node_extractor_t;
 
-void display_huffman_code(tree_t tree);
+void display_huffman_code(canonical_t* tree);
 void print_code(uint8_t code, int code_length);
 
 void encode(tree_t tree, char* string_input, int* total_length);

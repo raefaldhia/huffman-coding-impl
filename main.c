@@ -10,8 +10,11 @@
 #include "frequency.h"
 #include "intermediate.h"
 #include "util.h"
-
+#include "stream.h"
 int main() {
+	FILE* fhandler = fopen("a", "r");
+	stream_decode(fhandler, stdout);
+	fclose(fhandler);
 	tree_t tree;
 	int choice, i, quantity, frequency, total_length, str_length;
 	char *string_input, *encode_str;
@@ -30,6 +33,7 @@ int main() {
 		case 1 :
 			generate_counter_tree(&tree, "HUFFMAN CODING");
 			counter_reinit_frequency((counter_t*)&tree);
+			frequency_push((frequency_node_t*)tree.head, '\0', 1);
 		break;
 		
 		case 2 :
@@ -37,9 +41,11 @@ int main() {
 			clearstdin();
 			stream_counter_read((counter_t*)&tree, stdin);
 			counter_reinit_frequency((counter_t*)&tree);
+			frequency_push((frequency_node_t*)tree.head, '\0', 1);
 		break;
 		
 		case 3 :
+			frequency_push((frequency_node_t*)tree.head, '\0', 1);
 			printf("How Many Letters : ");
 			scanf("%d", &quantity);
 			
@@ -70,7 +76,7 @@ int main() {
 		
 		switch(choice){
 			case 1 :
-				display_huffman_code(tree);
+				display_huffman_code((canonical_t*)&tree);
 				getch();	
 			break;
 			
@@ -79,11 +85,15 @@ int main() {
 				encode_str = malloc(100*sizeof(char)); //not effective
 				printf("Input                       = ");
 				clearstdin();
-				gets(encode_str);
-				printf("Huffman Code                = ");
-				encode(tree, encode_str, &total_length);
-				str_length = strlen(encode_str);
-				printf("\nRasio Bit (Input : Huffman) = %d : %d",8 * str_length, total_length);
+//				gets(encode_str);
+				FILE* fHandler;
+				fHandler = fopen("a", "w");
+				stream_encode(&tree, stdin, fHandler);
+				fclose(fHandler);
+//				printf("Huffman Code                = ");
+//				encode(tree, encode_str, &total_length);
+//				str_length = strlen(encode_str);
+//				printf("\nRasio Bit (Input : Huffman) = %d : %d",8 * str_length, total_length);
 				getch();
 			break;
 			

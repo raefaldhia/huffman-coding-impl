@@ -46,8 +46,10 @@ void canonical_gencode(canonical_t* tree) {
 	canonical_node_t
 		*curr = tree->head;
 
-	size_t len  = 0;
-	int8_t code = 0;
+	size_t	
+		len  = 0;
+	uint16_t
+		code = 0;
 
 	while (curr != NULL_NODE) {
 		code <<= (curr->code_length - len);
@@ -60,6 +62,21 @@ void canonical_gencode(canonical_t* tree) {
 	}
 }
 
+int canonical_getcode(canonical_t* tree, char letter, uint16_t* code, size_t* code_length) {
+	canonical_node_t
+		*current = tree->head;
+	
+	while(current != NULL_NODE){
+		if(current->character == letter){
+			*code 		  = current->code;
+			*code_length += current->code_length;
+			
+			return current->code_length;
+		}
+		current=current->next;
+	}
+	return 0;
+}
 canonical_node_t* canonical_node_create(char character, size_t code_length) {
 	canonical_node_t
 		*node = malloc(sizeof(canonical_node_t));
@@ -70,7 +87,8 @@ canonical_node_t* canonical_node_create(char character, size_t code_length) {
 
 	node->character   = character;
 	node->code_length = code_length;
-
+	node->next        = NULL_NODE;
+	
 	return node;
 }
 
