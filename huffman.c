@@ -11,13 +11,17 @@
 
 void huffman_node_extractor_init(huffman_node_extractor_t* node_extractor, huffman_node_t* node) {
 	assert(node_extractor != NULL);
+	assert(node != NULL);
+	assert(node != NULL_NODE);
 
 	node_extractor->stack = NULL_NODE;
-
 	huffman_node_extractor_push(node_extractor, node, 0);
 }
 
-void huffman_node_extractor_push(huffman_node_extractor_t* node_extractor,  huffman_node_t* node, int level) {
+void huffman_node_extractor_push(huffman_node_extractor_t* node_extractor, huffman_node_t* node, int level) {
+	assert(node_extractor != NULL);
+	assert(node != NULL);
+
 	while (node != NULL_NODE) {
 		if (node->is_chain == 1) {
 			node->left 		  = node->right->left;
@@ -26,19 +30,24 @@ void huffman_node_extractor_push(huffman_node_extractor_t* node_extractor,  huff
 		node->code_length = level++;
 
 		node_t* 
-			stacked = (node_t*)node;            
-		node 				= node->left;
+			stacked = (node_t*)node;    
+
+		node 				  = node->left;
 		stacked->left 		  = node_extractor->stack;
 		node_extractor->stack = stacked;
 	}
 }
 
-huffman_node_t* huffman_node_extractor_get(huffman_node_extractor_t* node_extractor) {
-	huffman_node_t* retval = NULL_NODE;
+huffman_node_t* huffman_node_extractor_pop(huffman_node_extractor_t* node_extractor) {
+	assert(node_extractor != NULL);
+
+	huffman_node_t
+		*retval = NULL_NODE;
 
 	// transversing iterative inorder and disasemble visited node
 	if (node_extractor->stack != NULL_NODE) {
-		huffman_node_t* right  = NULL_NODE;
+		huffman_node_t
+			*right  = NULL_NODE;
 		
 		// pop from stack
 		retval = (huffman_node_t*)node_extractor->stack;
@@ -52,7 +61,6 @@ huffman_node_t* huffman_node_extractor_get(huffman_node_extractor_t* node_extrac
 		// push right child to the stack
 		huffman_node_extractor_push(node_extractor, right, retval->code_length + 1);
 	}
-
 	return retval;
 }
 

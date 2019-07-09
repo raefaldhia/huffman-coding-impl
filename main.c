@@ -34,11 +34,8 @@ int main() {
 		
 		case 2 :
 			printf("String : ");
-//			string_input=malloc(100*sizeof(char)); //not effective
 			clearstdin();
-//			gets(string_input);
 			stream_counter_read((counter_t*)&tree, stdin);
-//			generate_counter_tree(&tree, string_input);
 			counter_reinit_frequency((counter_t*)&tree);
 		break;
 		
@@ -47,11 +44,9 @@ int main() {
 			scanf("%d", &quantity);
 			
 			for(i=0; i<quantity; i++){
-				
 				printf("Letter    :");scanf(" %c", &letter);
 				printf("Frequency :");scanf("%d", &frequency);
-				tree.head = frequency_push((frequency_node_t*)tree.head, letter, frequency);
-				
+				tree.head = frequency_push((frequency_node_t*)tree.head, letter, frequency);				
 			}
 		break;
 		

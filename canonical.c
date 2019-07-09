@@ -5,76 +5,46 @@
 
 #include "tree.h"
 #include "huffman.h"
-
 #include "intermediate.h"
-#include "huffman.h"
 
-int canonical_push(canonical_t* tree, size_t code_length, char character) {
-	canonical_node_t* node = malloc(sizeof(canonical_node_t));
-	if (node == NULL) {
-		return 1;
-	}
+void canonical_push(canonical_t* tree, canonical_node_t* node) {
+	assert(tree != NULL);
+	assert(node != NULL);
+	assert(node != NULL_NODE);
 
-	canonical_node_t** location = &tree->head;
+	canonical_node_t
+		**location = &tree->head;
+	
+	/* find suitable location to put the character */
 	while (*location != NULL_NODE) {
-	    if (node->code_length < (*location)->code_length) {
-		    break;
+		if (node->code_length < (*location)->code_length) {
+			break;
 		}
 		location = &(*location)->next;
 	}	
 	node->next = *location;
 	*location  = node;
-
-	return 0;
 }
 
-void canonical_huffman_push(canonical_t* tree, huffman_node_t* node) {
-	/* push to the canonical tree */
-	canonical_node_t** location = &tree->head;
-	while (*location != NULL_NODE) {
-	    if (node->code_length < (*location)->code_length) {
-		    break;
-		}
-		location = &(*location)->next;
+tree_retval_t canonical_pushr(canonical_t* tree, char character, size_t code_length) {
+	assert(tree != NULL);
+
+	canonical_node_t
+		*node = canonical_node_create(character, code_length);
+	
+	if (node == NULL_NODE) {
+		return NMEMORY;
 	}
+	canonical_push(tree, node);
 
-    /* create canonical node from huffman node and place the node in specified place */
-    canonical_node_t* canonical_node = realloc(node, sizeof(canonical_node_t));
-    canonical_node->next = *location;
-	*location            = canonical_node;
+	return OK;
 }
 
-void intermediate_reinit_canonical(intermediate_t* tree) {
-    assert(tree != NULL);
+void canonical_gencode(canonical_t* tree) {
+	assert(tree != NULL);
 
-    huffman_node_t*
-        node;
-    
-    /* delete the carrier */
-    node = tree->head;
-	tree->head = node->left;
-	free(node);
-
-	node_extractor_t node_extractor;
-	huffman_node_extractor_init(&node_extractor, tree->head);
-
-	tree->head = NULL_NODE;  // mark as empty tree for canonical form of huffman coding
-
-	while ((node = huffman_node_extractor_get(&node_extractor)) != NULL_NODE) {
-		/* in canonical form of huffman coding the external node is not required anymore */
-		if (node->is_chain) {
-			free(node);
-			continue;
-		}
-
-		/* push to the canonical tree */
-        canonical_huffman_push(tree, node);
-	}
-    canonical_code_generate(tree);
-}
-
-void canonical_code_generate(canonical_t* tree) {
-    canonical_node_t* curr = tree->head;
+	canonical_node_t
+		*curr = tree->head;
 
 	size_t len  = 0;
 	int8_t code = 0;
@@ -88,4 +58,48 @@ void canonical_code_generate(canonical_t* tree) {
 		
 		curr = curr->next;
 	}
+}
+
+canonical_node_t* canonical_node_create(char character, size_t code_length) {
+	canonical_node_t
+		*node = malloc(sizeof(canonical_node_t));
+
+	if (node == NULL) {
+		return NULL_NODE;
+	}
+
+	node->character   = character;
+	node->code_length = code_length;
+
+	return node;
+}
+
+void intermediate_reinit_canonical(intermediate_t* tree) {
+	assert(tree != NULL);
+
+	huffman_node_t
+		*node;
+	
+	/* delete the carrier */
+	node = tree->head;
+	tree->head = node->left;
+	free(node);
+
+	node_extractor_t node_extractor;
+	huffman_node_extractor_init(&node_extractor, tree->head);
+
+	tree->head = NULL_NODE;
+
+	while ((node = huffman_node_extractor_pop(&node_extractor)) != NULL_NODE) {
+		if (!node->is_chain) {
+			/* shrink and push the node to the canonical tree */
+			canonical_node_t
+				*canonical_node = realloc(node, sizeof(canonical_node_t));
+
+			canonical_push(tree, canonical_node);
+		} else {
+			free(node); // chain not used anymore in canonical
+		}
+	}
+	canonical_gencode(tree);
 }
