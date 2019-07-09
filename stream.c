@@ -27,7 +27,7 @@ void stream_decode(FILE* in, FILE* out) {
 		if (fwrite(&character, sizeof(char), 1, out) == 0) {
 			return;
 		}
-		canonical_push(&tree, code_len, character);
+		canonical_pushr(&tree, character, code_len);
 	}
 
 	uint16_t block;

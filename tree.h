@@ -34,11 +34,11 @@ typedef struct node_s {
 } node_t;
 
 typedef struct tree_s {
-    void* head;
+	void* head;
 } tree_t;
 
 typedef struct node_extractor_s {
-    node_t* stack;
+	node_t* stack;
 } node_extractor_t;
 
 void tree_init(tree_t* tree);
@@ -46,7 +46,7 @@ void tree_close(tree_t* tree);
 
 void node_extractor_init(node_extractor_t* node_extractor, node_t* node);
 void node_extractor_push(node_extractor_t* node_extractor, node_t* node);
-void* node_extractor_get(node_extractor_t* node_extractor);
+void* node_extractor_pop(node_extractor_t* node_extractor);
 
 extern node_t null_node;
 

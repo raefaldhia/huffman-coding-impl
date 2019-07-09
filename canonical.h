@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "huffman.h"
+#include "tree.h"
 #include "intermediate.h"
 
 /* Every field have to be same size as described in node_t (tree.h) */
@@ -19,11 +19,12 @@ typedef struct canonical_s {
 	canonical_node_t* head;
 } canonical_t;
 
-int canonical_push(canonical_t* tree, size_t code_length, char code);
-void canonical_huffman_push(canonical_t* tree, huffman_node_t* node);
-void intermediate_reinit_canonical(intermediate_t* tree);
-void canonical_code_generate(canonical_t* tree);
+void canonical_push(canonical_t* tree, canonical_node_t* node);
+tree_retval_t canonical_pushr(canonical_t* tree, char character, size_t code_length);
+void canonical_gencode(canonical_t* tree);
 
-//void huffman_reinit_canonical
+canonical_node_t* canonical_node_create(char character, size_t code_length);
+
+void intermediate_reinit_canonical(intermediate_t* tree);
 
 #endif // CANONICAL_H

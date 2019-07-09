@@ -2,16 +2,16 @@
 #define FREQUENCY_H
 
 #include <stddef.h>
-#include <stdbool.h>
+#include <stdint.h>
 
 #include "tree.h"
 #include "counter.h"
 
-/* Every field have to be same size as described in node_t (tree.h) */
+/* each field must have equal size as described in node_t (tree.h) */
 typedef struct frequency_node_s {
 	char character;
 	size_t frequency;
-	int16_t _reserved; // initialize to 0, for later use by huffman intermediate
+	int16_t _reserved;
 	struct frequency_node_s* right;
 	struct frequency_node_s* left;
 } frequency_node_t;

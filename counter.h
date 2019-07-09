@@ -12,7 +12,7 @@ typedef enum {
 	RIGHT =  1
 } balance_factor_t;
 
-/* Every field have to be same size as described in node_t (tree.h) */
+/* each field must have equal size as described in node_t (tree.h) */
 typedef struct counter_node_s {
 	char character;
 	size_t count;
@@ -28,6 +28,7 @@ typedef struct counter_s {
 void generate_counter_tree(counter_t* tree, char* string_input);
 tree_retval_t counter_push(counter_t* tree, char character);
 
+counter_node_t* counter_node_create(char character);
 int counter_node_height_calculate(counter_node_t* node);
 counter_node_t* counter_node_rotate_left(counter_node_t* node);
 counter_node_t* counter_node_rotate_right(counter_node_t* node);
