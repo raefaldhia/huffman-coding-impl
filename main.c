@@ -39,7 +39,7 @@ int main() {
 		case 2 :
 			printf("String : ");
 			clearstdin();
-			stream_counter_read((counter_t*)&tree, stdin);
+			stream_counter_read(stdin, (counter_t*)&tree);
 			counter_reinit_frequency((counter_t*)&tree);
 			frequency_push((frequency_node_t*)tree.head, '\0', 1);
 		break;
@@ -88,7 +88,7 @@ int main() {
 //				gets(encode_str);
 				FILE* fHandler;
 				fHandler = fopen("a", "w");
-				stream_encode(&tree, stdin, fHandler);
+				stream_encode(stdin, fHandler, &tree);
 				fclose(fHandler);
 //				printf("Huffman Code                = ");
 //				encode(tree, encode_str, &total_length);

@@ -1,30 +1,53 @@
+#include "stream.h"
+
+#include <assert.h>
 #include <stdio.h>
 
-#include "tree.h"
 #include "canonical.h"
 #include "counter.h"
-#include "huffman.h"
 
-void stream_counter_read(counter_t* tree, FILE* in) {
+void stream_encode(FILE* in, FILE* out, canonical_t* tree) {
+	assert(in   != NULL);
+	assert(out  != NULL);
+	assert(tree != NULL);
+
+	stream_canonical_write(out, tree);
+
+	size_t 
+		zero = 0;
+	fwrite(&zero, sizeof(size_t), 1, out);
+
+	uint16_t 
+		block;
+	size_t 
+		block_length;
 	char 
-		stop,
 		character;
+	int
+		retval;
 
-	if (in == stdin) {
-		stop = '\n';
-	} else {
-		stop = '\0';
-	}
-
-	while (fread(&character,sizeof(char), 1, in) != 0) {
-		if (character == stop || character == '\0') {
-			return;
+	block_length = 0;
+	while (fread(&character, sizeof(char), 1, in) != 0) {
+ 		retval = stream_encode_write(out, tree, character, &block, &block_length);
+		if (retval != 0) {
+			break;
 		}
-		counter_push(tree, character);
+	}
+	retval = stream_encode_write(out, tree, '\0', &block, &block_length);
+	if (retval != 0) {
+		return;
+	}
+	if (block_length) {
+		block <<= 16 - block_length;
+		fwrite(&block, sizeof(uint16_t), 1, out);
 	}
 }
+int stream_encode_write(FILE* out, canonical_t* tree, char character, uint16_t* block, size_t* block_length) {
+	assert(tree 		!= NULL);
+	assert(out 			!= NULL);
+	assert(block 		!= NULL);
+	assert(block_length != NULL);
 
-int stream_encode_write(FILE* out, uint16_t* block, size_t* block_length, canonical_t* tree, char character) {
 	uint16_t 
 		code = 0;
 	size_t
@@ -46,7 +69,6 @@ int stream_encode_write(FILE* out, uint16_t* block, size_t* block_length, canoni
 		code_length -= 1;
 
 		*block <<= 1;
-		printf("%u", (code >> (code_length)) & 1);
 		*block  |= (code >> (code_length)) & 1;
 		*block_length += 1;
 	}
@@ -54,72 +76,14 @@ int stream_encode_write(FILE* out, uint16_t* block, size_t* block_length, canoni
 	return 0;
 }
 
-void stream_canonical_write(FILE* out, canonical_t* tree) {
-	canonical_node_t
-		*canonical_item = tree->head;
-
-	while (canonical_item != NULL_NODE) {
-		fwrite(&canonical_item->code_length, sizeof(size_t), 1, out);
-		fwrite(&canonical_item->character, sizeof(char), 1, out);
-		canonical_item = canonical_item->next;
-	}
-}
-
-void stream_encode(canonical_t* tree, FILE* in, FILE* out) {
-	stream_canonical_write(out, tree);
-
-	size_t 
-		zero = 0;
-	fwrite(&zero, sizeof(size_t), 1, out);
-
-	uint16_t 
-		block;
-	size_t 
-		block_length;
-	char 
-		character;
-	int
-		retval;
-
-	block_length = 0;
-	while (fread(&character, sizeof(char), 1, in) != 0) {
- 		retval = stream_encode_write(out, &block, &block_length, tree, character);
-		if (retval != 0) {
-			break;
-		}
-	}
-	retval = stream_encode_write(out, &block, &block_length, tree, '\0');
-	if (retval != 0) {
-		return;
-	}
-	if (block_length) {
-		block <<= 16 - block_length;
-		fwrite(&block, sizeof(uint16_t), 1, out);
-		fflush(stdout);
-	}
-}
-
-void stream_canonical_get(canonical_t* tree, FILE* in) {
-	size_t code_len;
-	char   character;
-	while (fread(&code_len, sizeof(size_t), 1, in) != 0){
-		if (code_len == 0) {
-			break;
-		}
-		if (fread(&character, sizeof(char), 1, in) == 0) {
-			return;
-		}
-		canonical_pushr(tree, character, code_len);
-	}
-	canonical_gencode(tree);
-	display_huffman_code(tree);
-}
-
 void stream_decode(FILE* in, FILE* out) {
+	assert(in  != NULL);
+	assert(out != NULL);
+
 	canonical_t tree;
 	tree.head = NULL_NODE;
 
-	stream_canonical_get(&tree, in);
+	stream_canonical_get(in, &tree);
 
 	canonical_node_t
 		**location = &tree.head;
@@ -141,10 +105,10 @@ void stream_decode(FILE* in, FILE* out) {
 					goto read;
 				}
 
-				code    <<= 1;
-				code     |= (block >> (15 - block_len) & 1);
-				code_len += 1;
-				block_len+=1;
+				code     <<= 1;
+				code      |= (block >> (15 - block_len) & 1);
+				code_len  += 1;
+				block_len +=1;
 			}
 
 			int 
@@ -162,13 +126,67 @@ void stream_decode(FILE* in, FILE* out) {
 				if ((*location)->character == '\0') {
 					return;
 				}
-				fprintf(out, "%c", (*location)->character);
-				fflush(stdout);
-
+				fwrite(&(*location)->character, sizeof(char), 1, out);
 				code     = 0;
 				code_len = 0;
 				location = &tree.head;
 			}
 		}
 	}
+}
+
+void stream_counter_read(FILE* in, counter_t* tree) {
+	assert(tree != NULL);
+	assert(in 	!= NULL);
+	
+	char 
+		stop,
+		character;
+
+	if (in == stdin) {
+		stop = '\n';
+	} else {
+		stop = '\0';
+	}
+
+	while (fread(&character,sizeof(char), 1, in) != 0) {
+		if (character == stop || character == '\0') {
+			return;
+		}
+		counter_push(tree, character);
+	}
+}
+
+void stream_canonical_write(FILE* out, canonical_t* tree) {
+	assert(out != NULL);
+	assert(tree != NULL);
+
+	canonical_node_t
+		*canonical_item = tree->head;
+
+	while (canonical_item != NULL_NODE) {
+		fwrite(&canonical_item->code_length, sizeof(size_t), 1, out);
+		fwrite(&canonical_item->character, sizeof(char), 1, out);
+		canonical_item = canonical_item->next;
+	}
+}
+
+void stream_canonical_get(FILE* in, canonical_t* tree) {
+	assert(in   != NULL);
+	assert(tree != NULL);
+
+	size_t
+		code_len;
+	char
+		character;
+	while (fread(&code_len, sizeof(size_t), 1, in) != 0){
+		if (code_len == 0) {
+			break;
+		}
+		if (fread(&character, sizeof(char), 1, in) == 0) {
+			return;
+		}
+		canonical_pushr(tree, character, code_len);
+	}
+	canonical_gencode(tree);
 }
