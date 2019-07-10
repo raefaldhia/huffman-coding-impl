@@ -100,12 +100,12 @@ void intermediate_reinit_canonical(intermediate_t* tree) {
 		*node;
 	
 	/* delete the carrier */
-	node = tree->head;
-	tree->head = node->left;
+	node = (huffman_node_t*)tree->head;
+	tree->head = (intermediate_node_t*)node->left;
 	free(node);
 
-	node_extractor_t node_extractor;
-	huffman_node_extractor_init(&node_extractor, tree->head);
+	huffman_node_extractor_t node_extractor;
+	huffman_node_extractor_init(&node_extractor, (huffman_node_t*)tree->head);
 
 	tree->head = NULL_NODE;
 
@@ -115,10 +115,10 @@ void intermediate_reinit_canonical(intermediate_t* tree) {
 			canonical_node_t
 				*canonical_node = realloc(node, sizeof(canonical_node_t));
 
-			canonical_push(tree, canonical_node);
+			canonical_push((canonical_t*)tree, canonical_node);
 		} else {
 			free(node); // chain not used anymore in canonical
 		}
 	}
-	canonical_gencode(tree);
+	canonical_gencode((canonical_t*)tree);
 }

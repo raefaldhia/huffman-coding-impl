@@ -40,7 +40,7 @@ void counter_reinit_frequency(counter_t* tree) {
 	while ((node = node_extractor_pop(&extractor)) != NULL_NODE) {
 		node->_reserved = 0; // reset to 0 as it required for intermediate tree
 
-		location = &tree->head;
+		location = (frequency_node_t**)&tree->head;
 		while (*location != NULL_NODE) {
 			if (node->frequency <= (*location)->frequency) {
 				location = &(*location)->left;
