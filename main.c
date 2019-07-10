@@ -35,7 +35,7 @@ int main() {
 		
 		switch(choice){
 			case 1 :
-				generate_counter_tree(&tree, "HUFFMAN CODING");
+				generate_counter_tree((counter_t*)&tree, "HUFFMAN CODING");
 				counter_reinit_frequency((counter_t*)&tree);
 				frequency_push((frequency_node_t*)tree.head, '\0', 1);
 			break;
@@ -68,7 +68,7 @@ int main() {
 				
 				//Make counter tree from input.txt file
 				fhandler = fopen(file_input_name , "r");
-				stream_counter_read(fhandler, &tree);
+				stream_counter_read(fhandler, (counter_t*)&tree);
 				fclose(fhandler);
 				
 				//Change tree from counter tree to frequency tree
@@ -84,12 +84,12 @@ int main() {
 			
 			break;		
 		}
-		frequency_reinit_intermediate((intermediate_t*)&tree);
-		intermediate_reinit_canonical(&tree);
+		frequency_reinit_intermediate((frequency_t*)&tree);
+		intermediate_reinit_canonical((intermediate_t*)&tree);
 		
 		//write huffman code to a file
 		fhandler = fopen("huffman_table.dat", "wb");
-		stream_canonical_write(fhandler, &tree);
+		stream_canonical_write(fhandler, (canonical_t*)&tree);
 		fclose(fhandler);
 		
 		printf("Huffman code generated...");
@@ -116,11 +116,12 @@ int main() {
 				
 				case 2 :
 					printf("Output File Name : ");
+					clearstdin();
 					gets(file_output_name);
 					printf("String Input : ");
 					fhandler = fopen(file_output_name, "w");
 					clearstdin();
-					stream_encode(stdin, fhandler, &tree);
+					stream_encode(stdin, fhandler, (canonical_t*)&tree);
 					fclose(fhandler);
 					
 					printf("File %s is generated", file_output_name);
@@ -151,7 +152,7 @@ int main() {
 					in = fopen(file_input_name, "r");
 					out = fopen(file_output_name, "w");
 					
-					stream_encode(in, out, &tree);
+					stream_encode(in, out, (canonical_t*)&tree);
 					
 					fclose(in);
 					fclose(out);

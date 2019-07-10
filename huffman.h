@@ -11,7 +11,7 @@
 typedef struct huffman_node_s {
 	char character;
 	size_t code_length;
-	bool is_chain;
+	uint16_t is_chain;
 	struct huffman_node_s* right;
 	struct huffman_node_s* left;
 } huffman_node_t;

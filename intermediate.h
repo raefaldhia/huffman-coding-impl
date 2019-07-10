@@ -9,7 +9,7 @@
 typedef struct intermediate_node_s {
 	char character;
 	size_t weight;
-	bool is_chain;
+	uint16_t is_chain;
 	struct intermediate_node_s* right;
 	struct intermediate_node_s* left;
 } intermediate_node_t;

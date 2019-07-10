@@ -29,8 +29,8 @@ void huffman_node_extractor_push(huffman_node_extractor_t* node_extractor, huffm
 		}
 		node->code_length = level++;
 
-		node_t* 
-			stacked = (node_t*)node;    
+		huffman_node_t* 
+			stacked = node;    
 
 		node 				  = node->left;
 		stacked->left 		  = node_extractor->stack;
@@ -74,7 +74,7 @@ void display_huffman_code(canonical_t* tree){
 	printf("\n===============================================================");
 	
 	while(current != NULL_NODE){
-		printf("\n   %c\t\t\t    %d \t\t\t   ", current->character, current->code_length);
+		printf("\n   %c\t\t\t    %ld \t\t\t   ", current->character, current->code_length);
 		print_code(current->code, current->code_length);
 		printf("\t      |");
 		current = current->next;

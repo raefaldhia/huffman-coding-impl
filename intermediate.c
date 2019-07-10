@@ -1,6 +1,7 @@
 #include "intermediate.h"
 
 #include <assert.h>
+#include <stdlib.h>
 
 void intermediate_push(intermediate_t* tree, intermediate_node_t* node) {
 	assert(tree != NULL);
@@ -73,7 +74,7 @@ tree_retval_t frequency_reinit_intermediate(frequency_t* tree) {
 	assert(tree != NULL);
 
 	intermediate_node_extractor_t extractor;
-	intermediate_node_extractor_init(&extractor, (intermediate_node_t*)&tree->head);
+	intermediate_node_extractor_init(&extractor, (intermediate_node_t**)&tree->head);
 
 	intermediate_node_t
 		*first,
@@ -88,7 +89,7 @@ tree_retval_t frequency_reinit_intermediate(frequency_t* tree) {
 		if (carrier == NULL_NODE) {
 			return NMEMORY;
 		}
-		intermediate_push(tree, carrier);
+		intermediate_push((intermediate_t*)tree, carrier);
 	} while (second != NULL_NODE);
 	
 	return OK;

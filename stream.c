@@ -17,62 +17,63 @@ void stream_encode(FILE* in, FILE* out, canonical_t* tree) {
 		zero = 0;
 	fwrite(&zero, sizeof(size_t), 1, out);
 
-	uint16_t 
+	stream_encode_write(in, out, tree);
+}
+
+void stream_encode_write(FILE* in, FILE* out, canonical_t* tree) {
+	stream_block_t
 		block;
-	size_t 
-		block_length;
+	
+	block.tree = tree;
+	block.size = 0;
+	block.out  = out;
+
 	char 
 		character;
 	int
 		retval;
 
-	block_length = 0;
 	while (fread(&character, sizeof(char), 1, in) != 0) {
- 		retval = stream_encode_write(out, tree, character, &block, &block_length);
+ 		retval = stream_encode_writeb(&block, character);
 		if (retval != 0) {
 			break;
 		}
 	}
-	retval = stream_encode_write(out, tree, '\0', &block, &block_length);
+	retval = stream_encode_writeb(&block, '\0');
 	if (retval != 0) {
 		return;
 	}
-	if (block_length) {
-		block <<= 16 - block_length;
-		fwrite(&block, sizeof(uint16_t), 1, out);
+	if (block.size) {
+		block.data <<= 16 - block.size;
+		fwrite(&block.data, sizeof(uint16_t), 1, out);
 	}
 }
-int stream_encode_write(FILE* out, canonical_t* tree, char character, uint16_t* block, size_t* block_length) {
-	assert(tree 		!= NULL);
-	assert(out 			!= NULL);
-	assert(block 		!= NULL);
-	assert(block_length != NULL);
+
+int stream_encode_writeb(stream_block_t* block, char character) {
+	assert(block != NULL);
 
 	uint16_t 
 		code = 0;
 	size_t
 		code_length = 0;
-	int 
-		retval = canonical_getcode(tree, character, &code, &code_length);
 
-	if(retval == 0) {
+	if (canonical_getcode(block->tree, character, &code, &code_length) == 0) {
 		return 1;
 	}
 
 	while (code_length) {
-		if (*block_length == 16) {
-			fwrite(block, sizeof(uint16_t), 1, out);
+		if (block->size == 16) {
+			fwrite(&block->data, sizeof(uint16_t), 1, block->out);
 			
-			*block        = 0;
-			*block_length = 0;
+			block->data = 0;
+			block->size = 0;
 		}
 		code_length -= 1;
 
-		*block <<= 1;
-		*block  |= (code >> (code_length)) & 1;
-		*block_length += 1;
+		block->data <<= 1;
+		block->data  |= (code >> (code_length)) & 1;
+		block->size  += 1;
 	}
-
 	return 0;
 }
 
@@ -158,16 +159,16 @@ void stream_counter_read(FILE* in, counter_t* tree) {
 }
 
 void stream_canonical_write(FILE* out, canonical_t* tree) {
-	assert(out != NULL);
+	assert(out  != NULL);
 	assert(tree != NULL);
 
 	canonical_node_t
-		*canonical_item = tree->head;
+		*node = tree->head;
 
-	while (canonical_item != NULL_NODE) {
-		fwrite(&canonical_item->code_length, sizeof(size_t), 1, out);
-		fwrite(&canonical_item->character, sizeof(char), 1, out);
-		canonical_item = canonical_item->next;
+	while (node != NULL_NODE) {
+		fwrite(&node->code_length, sizeof(size_t), 1, out);
+		fwrite(&node->character, sizeof(char), 1, out);
+		node = node->next;
 	}
 }
 
